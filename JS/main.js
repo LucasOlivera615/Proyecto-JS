@@ -7,7 +7,6 @@ function datos () { //Función que crea una persona a partir de los datos que el
         alert ("Cédula de identidad inválida, recuerda que la cédula debe tener máximo 8 digitos")
         ci = prompt("Escribe tu cedula de identidad. (sin puntos ni guiones.)")
     }
-    parseInt(ci)
     let dia = prompt("Escribe el día del calendario en el que quieras venir (en número de 2 dígitos)")
     while (dia.length !== 2) {
         alert ("El día es inválido, debe tener 2 digitos")
@@ -61,7 +60,7 @@ while (pregunta !== "4") {
             let nuevaPersona = datos()
             let busqueda = false
             for (const agendado of agendados) {
-                if (agendado.ci === nuevaPersona.ci) {
+                if (agendado.ci == nuevaPersona.ci) {
                     busqueda = true
                     alert ("La persona que intentas agendar ya tiene una fecha, su fuecha es: "+ agendado.fecha)
                 } else if (agendado.fecha === nuevaPersona.fecha) {
@@ -76,7 +75,7 @@ while (pregunta !== "4") {
 
             break
         case "2":
-            let ci = parseInt(prompt("Escribe la cédula de la persona sobre la que quieres consultar."))
+            let ci = prompt("Escribe la cédula de la persona sobre la que quieres consultar.")
             buscarAgendado(ci)
 
             break
