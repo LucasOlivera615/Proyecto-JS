@@ -36,7 +36,7 @@ function datos () { //Función que crea una persona a partir de los datos que el
 function buscarAgendado (ci) { //Funcion que busca si un usuario en particular está agendado para una visita en cierto día
     let busqueda = false
     for (const agendado of agendados) {
-        if (agendado.ci === ci) {
+        if (agendado.ci == ci) {
             busqueda = true
             alert("El usuario con la cédula de identidad " + ci + " está agendado para el " + agendado.fecha)
         }
