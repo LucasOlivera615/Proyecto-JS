@@ -21,10 +21,10 @@ function datos () { //Función que crea una persona a partir de los datos que el
     let mes = pedirFecha("Escribe el mes del calendario en el que quieras venir (en número de 2 dígitos)", "El mes es inválido, debe tener 2 digitos y estar entre 01 y 12", 2, 1, 12)
     let año = pedirFecha("Escribe el año del calendario en el que quieras venir (en número de 4 dígitos)", "El año es inválido, debe tener 4 digitos y ser mayor o igual a 2025", 4, 2025)
     let fecha = dia + "/" + mes + "/" + año
-    let hora = prompt("Escribe la hora en la que quieres agendarte, debe ser entre 1pm y 5pm")
-    while (hora.length != 1 || hora < 1 || hora > 5) {
+    let hora = parseInt(prompt("Escribe la hora en la que quieres agendarte, debe ser entre 1pm y 5pm"))
+    while (parseInt(hora) != hora || hora < 1 || hora > 5) {
         alert ("El horario que intentas ingresar es inválido.")
-        hora = prompt("Escribe la hora en la que quieres agendarte, debe ser entre 1pm y 5pm")
+        hora = parseInt(prompt("Escribe la hora en la que quieres agendarte, debe ser entre 1pm y 5pm"))
     }
 
     const persona = {nombre, ci, fecha, hora}
@@ -58,9 +58,31 @@ function fechasOcupadas () { //Funcion que muestra mediante alertas, las fechas 
     alert(mensaje)
 }
 
-let pregunta = prompt("¡Bienvenido al menú del consultorio odontológico Jardines!\n\n Pulsa el número correspondiente para navegar entre las distintas opciones: \n1 - Agendar a un usuario. \n2 - Consultar en qué fecha está agendado un usuario. \n3 - Consultar qué fechas ya están ocupadas. \n4 - Salir.")
+function eliminarAgenda() {
+    let ci = prompt ("Escribe la cédula de la persona a la que quieres eliminar la agenda.")
+    let index = -1
+    for (const agendado of agendados) {
+        if (agendado.ci == ci) {
+            index = agendados.indexOf(agendado)
+            if (confirm("¿Estas seguro de querer eliminar esta agenda? una vez eliminada, es necesario volver a agendarse.")) {
+                agendados.splice(index,1)
+                alert("La agenda del usuario con ci: " + ci + " fue eliminada exitosamente.")
+                return
+            } else {
+                alert ("La agenda no ha sido eliminada.")
+                return
+            }
+        }
+    }
+    
+    if (index === -1) {
+        alert ("El usuario con la cédula: " + ci + " no está agendado.")
+    }
+}
 
-while (pregunta !== "4") {
+let pregunta = prompt("¡Bienvenido al menú del consultorio odontológico Jardines!\n\n Pulsa el número correspondiente para navegar entre las distintas opciones: \n1 - Agendar a un usuario. \n2 - Consultar en qué fecha está agendado un usuario. \n3 - Consultar qué fechas ya están ocupadas. \n4 - Eliminar mi agenda. \n5 - Salir.")
+
+while (pregunta !== "5") {
     switch (pregunta) {
         case "1":
             let nuevaPersona = datos()
@@ -92,12 +114,16 @@ while (pregunta !== "4") {
             fechasOcupadas()
 
             break
+        case "4":
+            eliminarAgenda()
+
+            break
         default:
             alert("Respuesta inválida.")
             break
     }
 
-    pregunta = prompt("Pulsa el número correspondiente para navegar entre las distintas opciones: \n1 - Agendar a un usuario. \n2 - Consultar en qué fecha está agendado un usuario. \n3 - Consultar qué fechas ya están ocupadas. \n4 - Salir.").toLowerCase()
+    pregunta = prompt("¡Bienvenido al menú del consultorio odontológico Jardines!\n\n Pulsa el número correspondiente para navegar entre las distintas opciones: \n1 - Agendar a un usuario. \n2 - Consultar en qué fecha está agendado un usuario. \n3 - Consultar qué fechas ya están ocupadas. \n4 - Eliminar mi agenda. \n5 - Salir.")
 }
 
 alert("¡Que tengas un buen día!")
