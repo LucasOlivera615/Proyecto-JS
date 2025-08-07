@@ -1,3 +1,136 @@
-h1 {
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-header: rgba(140, 197, 217, 1);
+    --color-fondo: rgba(223, 236, 238, 1);
+}
+
+body{
+    background-color: var(--color-fondo);
+}
+
+.PanFila {
+    background-color: var(--color-header);
+}
+
+a {
+    text-decoration: none;
+}
+
+/*Estilos header*/
+
+ul, li{
+    list-style: none;
+}
+
+h1{
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 10px;
     text-align: center;
+}
+
+.PanMenu{
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+    font-size: 7px;
+    text-decoration: none;
+    color: black;
+    
+}
+
+.PanLogo {
+    margin-top: 0.5rem;
+    width: 100px;
+    border: 2px solid var(--color-header);
+    border-radius: 50%;
+}
+
+/*Estilos main*/
+.subtitulo {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: underline;
+}
+
+.PanTextoFormulario{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.PanFilaPrueba {
+    border: 1px solid black;
+}
+
+.PanColumnaPrueba {
+    background-color: rgb(197, 196, 196);
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
+
+/*Media querys*/
+
+@media (min-width: 375px) {
+
+    /*Estilos header*/
+
+    .PanMenu {
+        font-size: 8px;
+    }
+
+}
+
+@media (min-width: 425px) {
+
+    /*Estilos header*/
+
+    h1 {
+        font-size: 11px;
+    }
+
+    /*Estilos main*/
+
+    .subtitulo {
+        font-size: 17px;
+    }
+
+}
+
+@media (min-width: 768px) {
+
+    /*Estilos header*/
+
+    .PanMenu {
+        font-size: 10px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    /*Estilos main*/
+
+    .subtitulo {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1440px) {
+
+    /*Estilos header*/
+
+    .PanMenu {
+        font-size: 13px;
+    }
 }
