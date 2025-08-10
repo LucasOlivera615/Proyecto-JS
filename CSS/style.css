@@ -80,9 +80,9 @@ h1{
     background-color: var(--color-fondo);
 }
 
-.formularioOculto {
+/* .formularioOculto {
     display: none;
-}
+} */
 
 /*Media querys*/
 
