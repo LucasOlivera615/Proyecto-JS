@@ -56,11 +56,16 @@
                     <form class="formularioOculto" id="formularioAgenda">
                         <div class="mt-2">
                             <label for="nombre" class="form-label">Nombre del paciente</label>
-                            <input type="text" id="nombre" class="form-control" required>
+                            <input type="text" id="nombre" class="form-control">
+                        </div>
+                        <div class="mt-2">
+                            <label for="cedulaIdentidad" class="form-label">Cédula de identidad</label>
+                            <input type="number" id="cedulaIdentidad" class="form-control">
+                            <div class="mt-1 text-danger" id="cedulaValidacion"></div>
                         </div>
                         <div class="mt-2">
                             <label for="fecha" class="form-label">Fecha</label>
-                            <input type="date" id="fecha" class="form-control" required>
+                            <input type="date" id="fecha" class="form-control">
                         </div>
                         <div class="mt-2">
                             <label for="hora" class="form-label">Hora</label>
@@ -76,12 +81,23 @@
                                 <option value="17:00">17:00</option>
                                 <option value="17:30">17:30</option>
                             </select>
+                            <div class="mt-1 text-danger" id="horaValidacion"></div>
                         </div>
-                        <button type="submit" class="p-1 mt-3 PanBoton">Reservar turno</button>
+                        <div class="mt-1 text-danger" id="mensajeValidacion"></div>
+                        <button type="button" class="p-1 mt-3 PanBoton" id="enviarFormulario">Reservar turno</button>
                     </form>
                 </div>
-            <table>
-                
+            <table class="table mt-3 PanTabla">
+                <thead>
+                    <tr>
+                        <th class="PanTabla">Nombre</th>
+                        <th class="PanTabla">Fecha</th>
+                        <th class="PanTabla">Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
             </table>
         </section>
         
