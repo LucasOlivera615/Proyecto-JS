@@ -1,11 +1,26 @@
 //Constantes que apuntan a HTML
 
-const botonAgendar = document.getElementById("botonAgendar")
-const formularioAgenda = document.getElementById("formularioAgenda")
-const enviarFormulario = document.getElementById("enviarFormulario")
-const mensajeValidacion = document.getElementById("mensajeValidacion")
-const cedulaValidacion = document.getElementById("cedulaValidacion")
-const horaValidacion = document.getElementById("horaValidacion")
+    //Botones
+
+    const botonAgendar = document.getElementById("botonAgendar")
+    const enviarFormulario = document.getElementById("enviarFormulario")
+    const botonBorrarAgenda = document.getElementById("botonBorrarAgenda")
+    const borrarTurno = document.getElementById ("borrarTurno")
+
+    //Constantes de formulario
+
+    const formularioAgenda = document.getElementById("formularioAgenda")
+    const formularioBorrarAgenda = document.getElementById("formularioBorrarAgenda")
+
+    //Constantes de mensajes
+
+    const mensajeValidacion = document.getElementById("mensajeValidacion")
+    const cedulaValidacion = document.getElementById("cedulaValidacion")
+    const horaValidacion = document.getElementById("horaValidacion")
+    const cedulaABorrarValidacion = document.getElementById("cedulaABorrarValidacion")
+
+    //Constantes de
+
 const tbody = document.querySelector("table tbody")
 
 //Variables y constantes globales
@@ -81,6 +96,7 @@ function agendarPersona(persona){
 function insertarEnTabla(persona) {
 
     const fila = document.createElement("tr")
+    fila.id = persona.cedula
 
     const tdNombre = document.createElement("td")
     tdNombre.textContent = persona.nombre
@@ -101,10 +117,45 @@ function insertarEnTabla(persona) {
     tbody.appendChild(fila)
 }
 
-//DOM y Eventos:
+function buscarPersona (){
+
+    cedulaABorrarValidacion.textContent = ""
+    
+    const cedulaPersona = document.getElementById("cedulaABorrar").value
+
+    if (cedulaPersona.length > 8) {
+        cedulaABorrarValidacion.textContent = "La cédula es inválida, debe tener 8 dígitos o menos"
+        return
+    }
+    
+    const busqueda = agendados.findIndex(agendado => agendado.cedula === cedulaPersona)
+
+    if (busqueda === -1) {
+        cedulaABorrarValidacion.textContent = "El usuario que estás buscando no está agendado."
+        return
+    }
+
+    return busqueda
+}
+
+function borrarPersona(indice) {
+    agendados.splice(indice,1)
+    localStorage.setItem("agendados", JSON.stringify(agendados))
+}
+
+function retirarDeTabla(indice){
+    
+    const cedula = agendados[indice].cedula
+    document.getElementById(cedula).remove()
+}
+
+//DOM y Eventos
+
+//Evento de agendar
 
 botonAgendar.onclick = () => {
     formularioAgenda.classList.remove("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
 }
 
 enviarFormulario.onclick = () => {
@@ -120,6 +171,23 @@ enviarFormulario.onclick = () => {
         insertarEnTabla(nuevaPersona)
         limpiarCampos()
         formularioAgenda.classList.add("formularioOculto")
+    }
+}
+
+//Evento de borrar agenda
+
+botonBorrarAgenda.onclick = () => {
+    formularioBorrarAgenda.classList.remove("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+}
+
+borrarTurno.onclick = () => {
+
+    const persona = buscarPersona()
+
+    if (persona !== -1) {
+        retirarDeTabla(persona)
+        borrarPersona(persona)
     }
 }
 
