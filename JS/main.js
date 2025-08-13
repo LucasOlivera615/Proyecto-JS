@@ -6,11 +6,14 @@
     const enviarFormulario = document.getElementById("enviarFormulario")
     const botonBorrarAgenda = document.getElementById("botonBorrarAgenda")
     const borrarTurno = document.getElementById ("borrarTurno")
+    const botonReagenda = document.getElementById("botonReagenda")
+    const reagendarTurno = document.getElementById("reagendarTurno")
 
     //Constantes de formulario
 
     const formularioAgenda = document.getElementById("formularioAgenda")
     const formularioBorrarAgenda = document.getElementById("formularioBorrarAgenda")
+    const formularioReagenda = document.getElementById("formularioReagenda")
 
     //Constantes de mensajes
 
@@ -18,6 +21,7 @@
     const cedulaValidacion = document.getElementById("cedulaValidacion")
     const horaValidacion = document.getElementById("horaValidacion")
     const cedulaABorrarValidacion = document.getElementById("cedulaABorrarValidacion")
+    const horaReagendaValidacion = document.getElementById("horaReagendaValidacion")
 
     //Constantes de
 
@@ -117,21 +121,23 @@ function insertarEnTabla(persona) {
     tbody.appendChild(fila)
 }
 
-function buscarPersona (){
-
-    cedulaABorrarValidacion.textContent = ""
+function buscarPersona (campoID, mensajeID){
     
-    const cedulaPersona = document.getElementById("cedulaABorrar").value
+    const mensaje = document.getElementById(mensajeID)
+
+    mensaje.textContent = ""
+    
+    const cedulaPersona = document.getElementById(campoID).value
 
     if (cedulaPersona.length > 8) {
-        cedulaABorrarValidacion.textContent = "La cédula es inválida, debe tener 8 dígitos o menos"
+        mensaje.textContent = "La cédula es inválida, debe tener 8 dígitos o menos"
         return
     }
     
     const busqueda = agendados.findIndex(agendado => agendado.cedula === cedulaPersona)
 
     if (busqueda === -1) {
-        cedulaABorrarValidacion.textContent = "El usuario que estás buscando no está agendado."
+        mensaje.textContent = "El usuario que estás buscando no está agendado."
         return
     }
 
@@ -149,6 +155,44 @@ function retirarDeTabla(indice){
     document.getElementById(cedula).remove()
 }
 
+function reagendarPersona(indice) {
+    
+    const nuevaFecha = document.getElementById("fechaAReagendar").value
+    const nuevaHora = document.getElementById("horaAReagendar").value
+    agendados[indice].fecha = nuevaFecha
+    agendados[indice].hora = nuevaHora
+    localStorage.setItem("agendados", JSON.stringify(agendados));
+}
+
+function verificarNuevaFecha () {
+
+    horaReagendaValidacion.textContent = ""
+    
+    const nuevaFecha = document.getElementById("fechaAReagendar").value
+    const nuevaHora = document.getElementById("horaAReagendar").value
+
+    if (!nuevaFecha) {
+        horaReagendaValidacion.textContent = "Tienes que seleccionar una fecha."
+        return
+    }
+
+    for (const agendado of agendados) {
+        if (agendado.fecha === nuevaFecha && agendado.hora === nuevaHora){
+                horaReagendaValidacion.textContent = "El horario que seleccionaste ya está en uso."
+                return validacion
+            }
+    }
+    
+}
+
+function actualizarFilaTabla(indice) {
+
+    const fila = document.getElementById(agendados[indice].cedula)
+    fila.children[1].textContent = agendados[indice].fecha
+    fila.children[2].textContent = agendados[indice].hora
+
+}
+
 //DOM y Eventos
 
 //Evento de agendar
@@ -156,6 +200,7 @@ function retirarDeTabla(indice){
 botonAgendar.onclick = () => {
     formularioAgenda.classList.remove("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
 }
 
 enviarFormulario.onclick = () => {
@@ -179,11 +224,16 @@ enviarFormulario.onclick = () => {
 botonBorrarAgenda.onclick = () => {
     formularioBorrarAgenda.classList.remove("formularioOculto")
     formularioAgenda.classList.add("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
 }
 
 borrarTurno.onclick = () => {
 
-    const persona = buscarPersona()
+    const mensajeID = "cedulaABorrarValidacion"
+
+    const campoID = "cedulaABorrar"
+
+    const persona = buscarPersona(campoID, mensajeID)
 
     if (persona !== -1) {
         retirarDeTabla(persona)
@@ -194,3 +244,29 @@ borrarTurno.onclick = () => {
 agendados.forEach(persona => {
     insertarEnTabla(persona)
 })
+
+//Evento de reagendar
+
+botonReagenda.onclick = () => {
+    formularioReagenda.classList.remove("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
+}
+
+reagendarTurno.onclick = () => {
+
+    const mensajeID = "mensajeCedulaAReagendar"
+
+    const campoID = "cedulaAReagendar"
+
+    const persona = buscarPersona(campoID, mensajeID)
+
+    if (persona !== -1) {
+        
+        verificarNuevaFecha()
+        reagendarPersona(persona)
+        actualizarFilaTabla(persona)
+
+    }
+
+}
