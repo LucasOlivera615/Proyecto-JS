@@ -161,7 +161,7 @@ function reagendarPersona(indice) {
     const nuevaHora = document.getElementById("horaAReagendar").value
     agendados[indice].fecha = nuevaFecha
     agendados[indice].hora = nuevaHora
-    localStorage.setItem("agendados", JSON.stringify(agendados));
+    localStorage.setItem("agendados", JSON.stringify(agendados))
 }
 
 function verificarNuevaFecha () {
