@@ -98,27 +98,16 @@ function agendarPersona(persona){
 }
 
 function insertarEnTabla(persona) {
-
-    const fila = document.createElement("tr")
-    fila.id = persona.cedula
-
-    const tdNombre = document.createElement("td")
-    tdNombre.textContent = persona.nombre
-    tdNombre.classList.add("PanTabla")
-
-    const tdFecha = document.createElement("td")
-    tdFecha.textContent = persona.fecha
-    tdFecha.classList.add("PanTabla")
-    
-    const tdHora = document.createElement("td")
-    tdHora.textContent = persona.hora
-    tdHora.classList.add("PanTabla")
-
-    fila.appendChild(tdNombre)
-    fila.appendChild(tdFecha)
-    fila.appendChild(tdHora)
-
-    tbody.appendChild(fila)
+    tbody.innerHTML += `
+        <tr id="${persona.cedula}">
+            <td class="PanTabla">${persona.nombre}</td>
+            <td class="PanTabla">${persona.cedula}</td>
+            <td class="PanTabla">${persona.fecha}</td>
+            <td class="PanTabla">${persona.hora}</td>
+            <td class="PanTabla">Descripcion del procedimiento</td>
+            <td class="PanTabla">A la persona le ocurre cierta cosa con el procedimiento</td>
+        </tr>
+    `
 }
 
 function buscarPersona (campoID, mensajeID){

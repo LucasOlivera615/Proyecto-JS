@@ -129,6 +129,21 @@
                             </select>
                             <div class="mt-1 text-danger" id="horaValidacion"></div>
                         </div>
+                        <div class="mt-2">
+                            <label for="procedimiento" class="form-label">Procedimiento a realizar</label>
+                            <select name="procedimiento" id="procedimiento" class="form-control">
+                                <option value="Limpieza dental">Limpieza dental</option>
+                                <option value="Empaste">Empaste</option>
+                                <option value="Endodoncia">Endodoncia</option>
+                                <option value="Ortodoncia">Ortodoncia</option>
+                                <option value="Extraccion">Extracción</option>
+                                <option value="Blanqueamiento">Blanqueamiento</option>
+                            </select>
+                        </div>
+                        <div class="mt-2">
+                            <label for="detalles" class="form-label">Detalles:</label>
+                            <textarea name="detalles" id="detalles" class="form-control"></textarea>
+                        </div>
                         <div class="mt-1 text-danger" id="mensajeValidacion"></div>
                         <button type="button" class="p-1 mt-3 PanBoton" id="enviarFormulario">Reservar turno</button>
                     </form>
@@ -137,8 +152,11 @@
                 <thead>
                     <tr>
                         <th class="PanTabla">Nombre</th>
+                        <th class="PanTabla">Cédula</th>
                         <th class="PanTabla">Fecha</th>
                         <th class="PanTabla">Hora</th>
+                        <th class="PanTabla">Procedimiento</th>
+                        <th class="PanTabla">Detalles</th>
                     </tr>
                 </thead>
                 <tbody>
