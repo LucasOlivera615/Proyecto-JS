@@ -23,9 +23,9 @@
     const cedulaABorrarValidacion = document.getElementById("cedulaABorrarValidacion")
     const horaReagendaValidacion = document.getElementById("horaReagendaValidacion")
 
-    //Constantes de
+    //Constantes de tabla
 
-const tbody = document.querySelector("table tbody")
+    const tbody = document.querySelector("table tbody")
 
 //Variables y constantes globales
 
@@ -38,12 +38,16 @@ function crearPersona () {
     const cedulaPersona = document.getElementById("cedulaIdentidad").value
     const fechaPersona = document.getElementById("fecha").value
     const horaPersona = document.getElementById("hora").value
+    const procedimientoPersona = document.getElementById("procedimiento").value
+    const detallesPersona = document.getElementById("detalles").value
 
     const persona = {
         nombre: nombrePersona,
         cedula: cedulaPersona,
         fecha: fechaPersona,
-        hora: horaPersona
+        hora: horaPersona,
+        procedimiento: procedimientoPersona,
+        detalles: detallesPersona
     }
 
     return persona
@@ -78,6 +82,10 @@ function validacionPersona(persona) {
                 return validacion
             }
         }
+    
+    if (!persona.detalles) {
+        persona.detalles = "Sin detalles."
+    }
 
     validacion = true
 
@@ -90,6 +98,8 @@ function limpiarCampos() {
     document.getElementById("cedulaIdentidad").value = ""
     document.getElementById("fecha").value = ""
     document.getElementById("hora").selectedIndex = 0
+    document.getElementById("procedimiento").selectedIndex = 0
+    document.getElementsById("detalles").value = ""
 }
 
 function agendarPersona(persona){
@@ -104,8 +114,8 @@ function insertarEnTabla(persona) {
             <td class="PanTabla">${persona.cedula}</td>
             <td class="PanTabla">${persona.fecha}</td>
             <td class="PanTabla">${persona.hora}</td>
-            <td class="PanTabla">Descripcion del procedimiento</td>
-            <td class="PanTabla">A la persona le ocurre cierta cosa con el procedimiento</td>
+            <td class="PanTabla">${persona.procedimiento}</td>
+            <td class="PanTabla">${persona.detalles}</td>
         </tr>
     `
 }
@@ -123,9 +133,9 @@ function buscarPersona (campoID, mensajeID){
         return
     }
     
-    const busqueda = agendados.findIndex(agendado => agendado.cedula === cedulaPersona)
+    const busqueda = agendados.find(agendado => agendado.cedula === cedulaPersona)
 
-    if (busqueda === -1) {
+    if (!busqueda) {
         mensaje.textContent = "El usuario que estás buscando no está agendado."
         return
     }
@@ -133,27 +143,33 @@ function buscarPersona (campoID, mensajeID){
     return busqueda
 }
 
-function borrarPersona(indice) {
-    agendados.splice(indice,1)
+function borrarPersona(persona) {
+    const nuevaAgenda = agendados.filter (agendado => agendado.cedula !== persona.cedula )
+    agendados.length = 0
+    agendados.push(...nuevaAgenda)
     localStorage.setItem("agendados", JSON.stringify(agendados))
 }
 
-function retirarDeTabla(indice){
+function retirarDeTabla(persona){
     
-    const cedula = agendados[indice].cedula
+    const cedula = persona.cedula
     document.getElementById(cedula).remove()
 }
 
-function reagendarPersona(indice) {
+function reagendarPersona(persona) {
     
     const nuevaFecha = document.getElementById("fechaAReagendar").value
     const nuevaHora = document.getElementById("horaAReagendar").value
-    agendados[indice].fecha = nuevaFecha
-    agendados[indice].hora = nuevaHora
+    
+    persona.fecha = nuevaFecha
+    persona.hora = nuevaHora
+
     localStorage.setItem("agendados", JSON.stringify(agendados))
 }
 
 function verificarNuevaFecha () {
+
+    let validacion = false
 
     horaReagendaValidacion.textContent = ""
     
@@ -162,7 +178,7 @@ function verificarNuevaFecha () {
 
     if (!nuevaFecha) {
         horaReagendaValidacion.textContent = "Tienes que seleccionar una fecha."
-        return
+        return validacion
     }
 
     for (const agendado of agendados) {
@@ -171,14 +187,18 @@ function verificarNuevaFecha () {
                 return validacion
             }
     }
+
+    validacion = true
+    
+    return validacion
     
 }
 
-function actualizarFilaTabla(indice) {
+function actualizarFilaTabla(persona) {
 
-    const fila = document.getElementById(agendados[indice].cedula)
-    fila.children[1].textContent = agendados[indice].fecha
-    fila.children[2].textContent = agendados[indice].hora
+    const fila = document.getElementById(persona.cedula)
+    fila.children[2].textContent = persona.fecha
+    fila.children[3].textContent = persona.hora
 
 }
 
@@ -224,7 +244,7 @@ borrarTurno.onclick = () => {
 
     const persona = buscarPersona(campoID, mensajeID)
 
-    if (persona !== -1) {
+    if (persona) {
         retirarDeTabla(persona)
         borrarPersona(persona)
     }
@@ -250,9 +270,8 @@ reagendarTurno.onclick = () => {
 
     const persona = buscarPersona(campoID, mensajeID)
 
-    if (persona !== -1) {
-        
-        verificarNuevaFecha()
+    if (persona && verificarNuevaFecha()) {
+
         reagendarPersona(persona)
         actualizarFilaTabla(persona)
 
