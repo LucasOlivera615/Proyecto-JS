@@ -8,12 +8,15 @@
     const borrarTurno = document.getElementById ("borrarTurno")
     const botonReagenda = document.getElementById("botonReagenda")
     const reagendarTurno = document.getElementById("reagendarTurno")
+    const botonCambioProcedimiento = document.getElementById("botonCambioProcedimiento")
+    const cambiarProcedimiento = document.getElementById("cambiarProcedimiento")
 
     //Constantes de formulario
 
     const formularioAgenda = document.getElementById("formularioAgenda")
     const formularioBorrarAgenda = document.getElementById("formularioBorrarAgenda")
     const formularioReagenda = document.getElementById("formularioReagenda")
+    const formularioCambiarProcedimiento = document.getElementById("formularioCambiarProcedimiento")
 
     //Constantes de mensajes
 
@@ -202,6 +205,10 @@ function actualizarFilaTabla(persona) {
 
 }
 
+function actualizarProcedimiento (persona) {
+    
+}
+
 //DOM y Eventos
 
 //Evento de agendar
@@ -210,6 +217,7 @@ botonAgendar.onclick = () => {
     formularioAgenda.classList.remove("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
     formularioReagenda.classList.add("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
 }
 
 enviarFormulario.onclick = () => {
@@ -234,6 +242,7 @@ botonBorrarAgenda.onclick = () => {
     formularioBorrarAgenda.classList.remove("formularioOculto")
     formularioAgenda.classList.add("formularioOculto")
     formularioReagenda.classList.add("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
 }
 
 borrarTurno.onclick = () => {
@@ -260,6 +269,7 @@ botonReagenda.onclick = () => {
     formularioReagenda.classList.remove("formularioOculto")
     formularioAgenda.classList.add("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
 }
 
 reagendarTurno.onclick = () => {
@@ -276,5 +286,29 @@ reagendarTurno.onclick = () => {
         actualizarFilaTabla(persona)
 
     }
+
+}
+
+//Evento de cambiar procedimiento.
+
+botonCambioProcedimiento.onclick = () => {
+    formularioCambiarProcedimiento.classList.remove("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
+}
+
+cambiarProcedimiento.onclick = () => {
+
+    const mensajeID = "cedulaNuevoProcedimientoValidacion"
+
+    const campoID = "cedulaNuevoProcedimiento"
+
+    const persona = buscarPersona(campoID, mensajeID)
+
+    if (persona) {
+
+    }
+
 
 }
