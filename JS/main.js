@@ -10,6 +10,8 @@
     const reagendarTurno = document.getElementById("reagendarTurno")
     const botonCambioProcedimiento = document.getElementById("botonCambioProcedimiento")
     const cambiarProcedimiento = document.getElementById("cambiarProcedimiento")
+    const botonCambioDetalles = document.getElementById("botonCambioDetalles")
+    const actualizarDetalles = document.getElementById("actualizarDetalles")
 
     //Constantes de formulario
 
@@ -17,6 +19,7 @@
     const formularioBorrarAgenda = document.getElementById("formularioBorrarAgenda")
     const formularioReagenda = document.getElementById("formularioReagenda")
     const formularioCambiarProcedimiento = document.getElementById("formularioCambiarProcedimiento")
+    const formularioCambiarDetalles = document.getElementById ("formularioCambiarDetalles")
 
     //Constantes de mensajes
 
@@ -34,7 +37,28 @@
 
 const agendados = JSON.parse(localStorage.getItem("agendados")) || []
 
+let procedimiento = document.getElementById("procedimiento")
+let cambioProcedimiento = document.getElementById("cambioProcedimiento")
+const URL = "./db/data.json"
+
 //Funciones
+
+async function obtenerProcedimientos() {
+    try {
+        const response = await fetch(URL)
+        const data = await response.json()
+        renderProcedimientos(data, procedimiento)
+        renderProcedimientos(data, cambioProcedimiento)
+    } catch(error) {
+        console.error("Error en la petición:", error)
+    }
+}
+
+function renderProcedimientos (listaProcedimientos, seleccionarElemento) {
+    seleccionarElemento.innerHTML = listaProcedimientos
+        .map(procedimiento => `<option value="${procedimiento}">${procedimiento}</option>`)
+        .join("")
+    }
 
 function crearPersona () {
     const nombrePersona = document.getElementById("nombre").value
@@ -102,7 +126,7 @@ function limpiarCampos() {
     document.getElementById("fecha").value = ""
     document.getElementById("hora").selectedIndex = 0
     document.getElementById("procedimiento").selectedIndex = 0
-    document.getElementsById("detalles").value = ""
+    document.getElementById("detalles").value = ""
 }
 
 function agendarPersona(persona){
@@ -197,7 +221,7 @@ function verificarNuevaFecha () {
     
 }
 
-function actualizarFilaTabla(persona) {
+function actualizarFechaYHoraTabla(persona) {
 
     const fila = document.getElementById(persona.cedula)
     fila.children[2].textContent = persona.fecha
@@ -206,10 +230,37 @@ function actualizarFilaTabla(persona) {
 }
 
 function actualizarProcedimiento (persona) {
-    
+    const nuevoProcedimiento = document.getElementById("cambioProcedimiento").value
+    persona.procedimiento = nuevoProcedimiento
+    localStorage.setItem("agendados", JSON.stringify(agendados))
+}
+
+function actualizarProcedimientoTabla (persona) {
+    const fila = document.getElementById (persona.cedula)
+    fila.children[4].textContent = persona.procedimiento
+}
+
+function guardarNuevoDetalle (persona) {
+    const nuevoDetalle = document.getElementById("detalleAActualizar").value
+    if (!nuevoDetalle) {
+        persona.detalles = "Sin detalles."
+        localStorage.setItem("agendados", JSON.stringify(agendados))
+        return
+    }
+    persona.detalles = nuevoDetalle
+    localStorage.setItem("agendados", JSON.stringify(agendados))
+}
+
+function actualizarDetallesTabla (persona){
+    const fila = document.getElementById(persona.cedula)
+    fila.children[5].textContent = persona.detalles
 }
 
 //DOM y Eventos
+
+//Llamado a procedimientos
+
+obtenerProcedimientos()
 
 //Evento de agendar
 
@@ -218,6 +269,7 @@ botonAgendar.onclick = () => {
     formularioBorrarAgenda.classList.add("formularioOculto")
     formularioReagenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
 }
 
 enviarFormulario.onclick = () => {
@@ -243,6 +295,7 @@ botonBorrarAgenda.onclick = () => {
     formularioAgenda.classList.add("formularioOculto")
     formularioReagenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
 }
 
 borrarTurno.onclick = () => {
@@ -270,6 +323,7 @@ botonReagenda.onclick = () => {
     formularioAgenda.classList.add("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
 }
 
 reagendarTurno.onclick = () => {
@@ -283,7 +337,7 @@ reagendarTurno.onclick = () => {
     if (persona && verificarNuevaFecha()) {
 
         reagendarPersona(persona)
-        actualizarFilaTabla(persona)
+        actualizarFechaYHoraTabla(persona)
 
     }
 
@@ -296,6 +350,7 @@ botonCambioProcedimiento.onclick = () => {
     formularioReagenda.classList.add("formularioOculto")
     formularioAgenda.classList.add("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
 }
 
 cambiarProcedimiento.onclick = () => {
@@ -307,8 +362,33 @@ cambiarProcedimiento.onclick = () => {
     const persona = buscarPersona(campoID, mensajeID)
 
     if (persona) {
-
+        actualizarProcedimiento(persona)
+        actualizarProcedimientoTabla(persona)
     }
 
 
+}
+
+//Evento de cambiar detalles.
+
+botonCambioDetalles.onclick = () => {
+    formularioCambiarDetalles.classList.remove("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
+}
+
+actualizarDetalles.onclick = () => {
+    
+    const mensajeID = "mensajeCedulaNuevoDetalle"
+
+    const campoID = "cedulaNuevoDetalle"
+
+    const persona = buscarPersona(campoID, mensajeID)
+
+    if (persona) {
+        guardarNuevoDetalle (persona)
+        actualizarDetallesTabla(persona)
+    }
 }
