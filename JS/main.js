@@ -12,6 +12,10 @@
     const cambiarProcedimiento = document.getElementById("cambiarProcedimiento")
     const botonCambioDetalles = document.getElementById("botonCambioDetalles")
     const actualizarDetalles = document.getElementById("actualizarDetalles")
+    const botonCambiarNombre = document.getElementById("botonCambiarNombre")
+    const actualizarNombre = document.getElementById("actualizarNombre")
+    const botonCambiarCedula = document.getElementById("botonCambiarCedula")
+    const actualizarCedula = document.getElementById("actualizarCedula")
 
     //Constantes de formulario
 
@@ -20,14 +24,8 @@
     const formularioReagenda = document.getElementById("formularioReagenda")
     const formularioCambiarProcedimiento = document.getElementById("formularioCambiarProcedimiento")
     const formularioCambiarDetalles = document.getElementById ("formularioCambiarDetalles")
-
-    //Constantes de mensajes
-
-    const mensajeValidacion = document.getElementById("mensajeValidacion")
-    const cedulaValidacion = document.getElementById("cedulaValidacion")
-    const horaValidacion = document.getElementById("horaValidacion")
-    const cedulaABorrarValidacion = document.getElementById("cedulaABorrarValidacion")
-    const horaReagendaValidacion = document.getElementById("horaReagendaValidacion")
+    const formularioCambiarNombre = document.getElementById("formularioCambiarNombre")
+    const formularioCambiarCedula = document.getElementById("formularioCambiarCedula")
 
     //Constantes de tabla
 
@@ -41,226 +39,20 @@ let procedimiento = document.getElementById("procedimiento")
 let cambioProcedimiento = document.getElementById("cambioProcedimiento")
 const URL = "./db/data.json"
 
-//Funciones
-
-async function obtenerProcedimientos() {
-    try {
-        const response = await fetch(URL)
-        const data = await response.json()
-        renderProcedimientos(data, procedimiento)
-        renderProcedimientos(data, cambioProcedimiento)
-    } catch(error) {
-        console.error("Error en la petición:", error)
-    }
-}
-
-function renderProcedimientos (listaProcedimientos, seleccionarElemento) {
-    seleccionarElemento.innerHTML = listaProcedimientos
-        .map(procedimiento => `<option value="${procedimiento}">${procedimiento}</option>`)
-        .join("")
-    }
-
-function crearPersona () {
-    const nombrePersona = document.getElementById("nombre").value
-    const cedulaPersona = document.getElementById("cedulaIdentidad").value
-    const fechaPersona = document.getElementById("fecha").value
-    const horaPersona = document.getElementById("hora").value
-    const procedimientoPersona = document.getElementById("procedimiento").value
-    const detallesPersona = document.getElementById("detalles").value
-
-    const persona = {
-        nombre: nombrePersona,
-        cedula: cedulaPersona,
-        fecha: fechaPersona,
-        hora: horaPersona,
-        procedimiento: procedimientoPersona,
-        detalles: detallesPersona
-    }
-
-    return persona
-
-}
-
-function validacionPersona(persona) {
-
-    mensajeValidacion.textContent = ""
-    cedulaValidacion.textContent = ""
-    horaValidacion.textContent = ""
-    
-    let validacion = false
-
-    if (!persona.nombre || !persona.cedula || !persona.fecha){
-        mensajeValidacion.textContent = "Todos los campos son obligatorios."
-        return validacion
-    }
-
-    if (persona.cedula.length > 8){
-            cedulaValidacion.textContent = "La cédula es inválida, debe tener 8 digitos o menos"
-            return validacion
-        }
-
-    for (const agendado of agendados) {
-        if (agendado.cedula === persona.cedula) {
-            cedulaValidacion.textContent = "La cédula ya está en uso."
-            return validacion
-        }
-        if (agendado.fecha === persona.fecha && agendado.hora === persona.hora){
-                horaValidacion.textContent = "El horario que seleccionaste ya está en uso."
-                return validacion
-            }
-        }
-    
-    if (!persona.detalles) {
-        persona.detalles = "Sin detalles."
-    }
-
-    validacion = true
-
-    return validacion
-
-}
-
-function limpiarCampos() {
-    document.getElementById("nombre").value = ""
-    document.getElementById("cedulaIdentidad").value = ""
-    document.getElementById("fecha").value = ""
-    document.getElementById("hora").selectedIndex = 0
-    document.getElementById("procedimiento").selectedIndex = 0
-    document.getElementById("detalles").value = ""
-}
-
-function agendarPersona(persona){
-    agendados.push(persona)
-    localStorage.setItem("agendados", JSON.stringify(agendados))
-}
-
-function insertarEnTabla(persona) {
-    tbody.innerHTML += `
-        <tr id="${persona.cedula}">
-            <td class="PanTabla">${persona.nombre}</td>
-            <td class="PanTabla">${persona.cedula}</td>
-            <td class="PanTabla">${persona.fecha}</td>
-            <td class="PanTabla">${persona.hora}</td>
-            <td class="PanTabla">${persona.procedimiento}</td>
-            <td class="PanTabla">${persona.detalles}</td>
-        </tr>
-    `
-}
-
-function buscarPersona (campoID, mensajeID){
-    
-    const mensaje = document.getElementById(mensajeID)
-
-    mensaje.textContent = ""
-    
-    const cedulaPersona = document.getElementById(campoID).value
-
-    if (cedulaPersona.length > 8) {
-        mensaje.textContent = "La cédula es inválida, debe tener 8 dígitos o menos"
-        return
-    }
-    
-    const busqueda = agendados.find(agendado => agendado.cedula === cedulaPersona)
-
-    if (!busqueda) {
-        mensaje.textContent = "El usuario que estás buscando no está agendado."
-        return
-    }
-
-    return busqueda
-}
-
-function borrarPersona(persona) {
-    const nuevaAgenda = agendados.filter (agendado => agendado.cedula !== persona.cedula )
-    agendados.length = 0
-    agendados.push(...nuevaAgenda)
-    localStorage.setItem("agendados", JSON.stringify(agendados))
-}
-
-function retirarDeTabla(persona){
-    
-    const cedula = persona.cedula
-    document.getElementById(cedula).remove()
-}
-
-function reagendarPersona(persona) {
-    
-    const nuevaFecha = document.getElementById("fechaAReagendar").value
-    const nuevaHora = document.getElementById("horaAReagendar").value
-    
-    persona.fecha = nuevaFecha
-    persona.hora = nuevaHora
-
-    localStorage.setItem("agendados", JSON.stringify(agendados))
-}
-
-function verificarNuevaFecha () {
-
-    let validacion = false
-
-    horaReagendaValidacion.textContent = ""
-    
-    const nuevaFecha = document.getElementById("fechaAReagendar").value
-    const nuevaHora = document.getElementById("horaAReagendar").value
-
-    if (!nuevaFecha) {
-        horaReagendaValidacion.textContent = "Tienes que seleccionar una fecha."
-        return validacion
-    }
-
-    for (const agendado of agendados) {
-        if (agendado.fecha === nuevaFecha && agendado.hora === nuevaHora){
-                horaReagendaValidacion.textContent = "El horario que seleccionaste ya está en uso."
-                return validacion
-            }
-    }
-
-    validacion = true
-    
-    return validacion
-    
-}
-
-function actualizarFechaYHoraTabla(persona) {
-
-    const fila = document.getElementById(persona.cedula)
-    fila.children[2].textContent = persona.fecha
-    fila.children[3].textContent = persona.hora
-
-}
-
-function actualizarProcedimiento (persona) {
-    const nuevoProcedimiento = document.getElementById("cambioProcedimiento").value
-    persona.procedimiento = nuevoProcedimiento
-    localStorage.setItem("agendados", JSON.stringify(agendados))
-}
-
-function actualizarProcedimientoTabla (persona) {
-    const fila = document.getElementById (persona.cedula)
-    fila.children[4].textContent = persona.procedimiento
-}
-
-function guardarNuevoDetalle (persona) {
-    const nuevoDetalle = document.getElementById("detalleAActualizar").value
-    if (!nuevoDetalle) {
-        persona.detalles = "Sin detalles."
-        localStorage.setItem("agendados", JSON.stringify(agendados))
-        return
-    }
-    persona.detalles = nuevoDetalle
-    localStorage.setItem("agendados", JSON.stringify(agendados))
-}
-
-function actualizarDetallesTabla (persona){
-    const fila = document.getElementById(persona.cedula)
-    fila.children[5].textContent = persona.detalles
-}
-
 //DOM y Eventos
 
 //Llamado a procedimientos
 
 obtenerProcedimientos()
+
+agendados.forEach(persona => insertarEnTabla(persona))
+
+//Bloqueo de fechas pasadas.
+
+const diaActual = new Date().toISOString().split("T")[0]
+document.getElementById("fecha").setAttribute("min", diaActual)
+document.getElementById("fechaAReagendar").setAttribute("min", diaActual)
+
 
 //Evento de agendar
 
@@ -270,6 +62,8 @@ botonAgendar.onclick = () => {
     formularioReagenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
     formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
 }
 
 enviarFormulario.onclick = () => {
@@ -283,8 +77,72 @@ enviarFormulario.onclick = () => {
     } else {
         agendarPersona(nuevaPersona)
         insertarEnTabla(nuevaPersona)
+        Swal.fire({
+            icon: "success",
+            text: `El usuario ${nuevaPersona.nombre} quedó agendado para el día ${formatearFechaAEuropea(nuevaPersona.fecha)} a las ${nuevaPersona.hora}, que tenga un buen día.`
+            })
         limpiarCampos()
         formularioAgenda.classList.add("formularioOculto")
+    }
+}
+
+//Evento de cambio de nombre
+
+botonCambiarNombre.onclick = () => {
+    formularioCambiarNombre.classList.remove("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
+}
+
+actualizarNombre.onclick = () => {
+    
+    const campoID = "cedulaNuevoNombre"
+
+    const persona = buscarPersona(campoID)
+
+    if (persona) {
+        const viejoNombre = persona.nombre
+        const esValido = cambioDeNombre(persona)
+        if (esValido){
+            actualizarNombreTabla(persona)
+            confirmacionNombreCambiado(persona, viejoNombre)
+            limpiarCampos()
+            formularioCambiarNombre.classList.add("formularioOculto")
+        }
+    }
+}
+
+//Evento de cambio de cédula
+
+botonCambiarCedula.onclick = () => {
+    formularioCambiarCedula.classList.remove("formularioOculto")
+    formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioAgenda.classList.add("formularioOculto")
+    formularioReagenda.classList.add("formularioOculto")
+    formularioCambiarProcedimiento.classList.add("formularioOculto")
+    formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+}
+
+actualizarCedula.onclick = () => {
+    const campoID = "cedulaNuevaCedula"
+
+    const persona = buscarPersona(campoID)
+
+    const viejaCedula = document.getElementById("cedulaNuevaCedula").value
+
+    if (persona) {
+        const esValida = cambiarCedula(persona)
+        if (esValida) {
+            actualizarCedulaTabla(persona, viejaCedula)
+            confirmacionCedulaCambiada(persona)
+            limpiarCampos()
+            formularioCambiarCedula.classList.add("formularioOculto")
+        }
     }
 }
 
@@ -296,25 +154,32 @@ botonBorrarAgenda.onclick = () => {
     formularioReagenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
     formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
 }
+
+
 
 borrarTurno.onclick = () => {
 
-    const mensajeID = "cedulaABorrarValidacion"
-
     const campoID = "cedulaABorrar"
 
-    const persona = buscarPersona(campoID, mensajeID)
+    const persona = buscarPersona(campoID)
 
     if (persona) {
-        retirarDeTabla(persona)
-        borrarPersona(persona)
+        confirmarBorrado(persona).then((result) => {
+            if (result.isConfirmed){
+                retirarDeTabla(persona)
+                borrarPersona(persona)
+                Swal.fire("El usuario ha sido eliminado.", "", "success")
+            } else if (result.isDenied) {
+                Swal.fire("El usuario sigue agendado.", "", "info")
+            }
+        })
+        limpiarCampos()
+        formularioBorrarAgenda.classList.add("formularioOculto")
     }
 }
-
-agendados.forEach(persona => {
-    insertarEnTabla(persona)
-})
 
 //Evento de reagendar
 
@@ -324,21 +189,23 @@ botonReagenda.onclick = () => {
     formularioBorrarAgenda.classList.add("formularioOculto")
     formularioCambiarProcedimiento.classList.add("formularioOculto")
     formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
 }
 
 reagendarTurno.onclick = () => {
 
-    const mensajeID = "mensajeCedulaAReagendar"
-
     const campoID = "cedulaAReagendar"
 
-    const persona = buscarPersona(campoID, mensajeID)
+    const persona = buscarPersona(campoID)
 
     if (persona && verificarNuevaFecha()) {
 
         reagendarPersona(persona)
         actualizarFechaYHoraTabla(persona)
-
+        personaReagendada(persona)
+        limpiarCampos()
+        formularioReagenda.classList.add("formularioOculto")
     }
 
 }
@@ -351,19 +218,22 @@ botonCambioProcedimiento.onclick = () => {
     formularioAgenda.classList.add("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
     formularioCambiarDetalles.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
 }
 
 cambiarProcedimiento.onclick = () => {
 
-    const mensajeID = "cedulaNuevoProcedimientoValidacion"
-
     const campoID = "cedulaNuevoProcedimiento"
 
-    const persona = buscarPersona(campoID, mensajeID)
+    const persona = buscarPersona(campoID)
 
     if (persona) {
         actualizarProcedimiento(persona)
         actualizarProcedimientoTabla(persona)
+        procedimientoActualizado(persona)
+        limpiarCampos()
+        formularioCambiarProcedimiento.classList.add("formularioOculto")
     }
 
 
@@ -377,18 +247,21 @@ botonCambioDetalles.onclick = () => {
     formularioReagenda.classList.add("formularioOculto")
     formularioAgenda.classList.add("formularioOculto")
     formularioBorrarAgenda.classList.add("formularioOculto")
+    formularioCambiarNombre.classList.add("formularioOculto")
+    formularioCambiarCedula.classList.add("formularioOculto")
 }
 
 actualizarDetalles.onclick = () => {
-    
-    const mensajeID = "mensajeCedulaNuevoDetalle"
 
     const campoID = "cedulaNuevoDetalle"
 
-    const persona = buscarPersona(campoID, mensajeID)
+    const persona = buscarPersona(campoID)
 
     if (persona) {
         guardarNuevoDetalle (persona)
         actualizarDetallesTabla(persona)
+        detalleActualizado(persona)
+        limpiarCampos()
+        formularioCambiarDetalles.classList.add("formularioOculto")
     }
 }

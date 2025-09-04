@@ -13,6 +13,7 @@
     <!--Mis estilos-->
     <link rel="stylesheet" href="./CSS/style.css">
     <!--Mi JS-->
+    <script defer src="./JS/utilities.js"></script>
     <script defer src="./JS/main.js"></script>
 </head>
 <body>
@@ -52,6 +53,12 @@
                     <button class="p-1 PanBoton" id="botonAgendar">Agendar</button>
                 </div>
                 <div class="col text-center">
+                    <button class="p-1 PanBoton" id="botonCambiarNombre">Modificar nombre</button>
+                </div>
+                <div class="col text-center">
+                    <button class="p-1 PanBoton" id="botonCambiarCedula">Modificar cédula</button>
+                </div>
+                <div class="col text-center">
                     <button class="p-1 PanBoton" id="botonBorrarAgenda">Borrar agenda</button>
                 </div>
                 <div class="col text-center">
@@ -65,11 +72,36 @@
                 </div>
             </div>
             <div class="row mx-auto mt-3 justify-content-center align-items-center">
+                <form class="formularioOculto" id="formularioCambiarCedula">
+                    <div class="mt-2">
+                        <label for="cedulaNuevaCedula" class="form-label">Cédula de identidad actual:</label>
+                        <input type="number" id="cedulaNuevaCedula" class="form-control">
+                    </div>
+                    <div class="mt-2">
+                        <label for="nuevaCedula" class="form-label">Nueva cédula del paciente:</label>
+                        <input type="number" id="nuevaCedula" class="form-control">
+                    </div>
+                    <button type="button" class="p-1 mt-3 PanBoton" id="actualizarCedula">Actualizar cédula</button>
+                </form>
+            </div>
+            <div class="row mx-auto mt-3 justify-content-center align-items-center">
+                <form class="formularioOculto" id="formularioCambiarNombre">
+                    <div class="mt-2">
+                        <label for="cedulaNuevoNombre" class="form-label">Cédula de identidad:</label>
+                        <input type="number" id="cedulaNuevoNombre" class="form-control">
+                    </div>
+                    <div class="mt-2">
+                        <label for="nuevoNombre" class="form-label">Nuevo nombre del paciente:</label>
+                        <input type="text" id="nuevoNombre" class="form-control">
+                    </div>
+                    <button type="button" class="p-1 mt-3 PanBoton" id="actualizarNombre">Actualizar nombre</button>
+                </form>
+            </div>
+            <div class="row mx-auto mt-3 justify-content-center align-items-center">
                 <form class="formularioOculto" id="formularioCambiarDetalles">
                     <div class="mt-2">
                         <label for="cedulaNuevoDetalle" class="form-label">Cédula de identidad</label>
                         <input type="number" id="cedulaNuevoDetalle" class="form-control">
-                        <div class="mt-1 text-danger" id="mensajeCedulaNuevoDetalle"></div>
                     </div>
                     <div class="mt-2">
                         <label for="detalleAActualizar" class="form-label">Detalles:</label>
@@ -83,7 +115,6 @@
                     <div class="mt-2">
                         <label for="cedulaAReagendar" class="form-label">Cédula de identidad</label>
                         <input type="number" id="cedulaAReagendar" class="form-control">
-                        <div class="mt-1 text-danger" id="mensajeCedulaAReagendar"></div>
                     </div>
                     <div class="mt-2">
                         <label for="fechaAReagendar" class="form-label">Fecha</label>
@@ -103,7 +134,6 @@
                             <option value="17:00">17:00</option>
                             <option value="17:30">17:30</option>
                         </select>
-                        <div class="mt-1 text-danger" id="horaReagendaValidacion"></div>
                     </div>
                     <button type="button" class="p-1 mt-3 PanBoton" id="reagendarTurno">Reagendar turno</button>
                 </form>
@@ -113,7 +143,6 @@
                     <div class="mt-2">
                         <label for="cedulaNuevoProcedimiento" class="form-label">Cédula de identidad</label>
                         <input type="number" id="cedulaNuevoProcedimiento" class="form-control">
-                        <div class="mt-1 text-danger" id="cedulaNuevoProcedimientoValidacion"></div>
                     </div>
                     <div class="mt-2">
                         <label for="cambioProcedimiento" class="form-label">Nuevo procedimiento a realizar</label>
@@ -127,7 +156,6 @@
                     <div class="mt-2">
                         <label for="cedulaABorrar" class="form-label">Cédula de identidad</label>
                         <input type="number" id="cedulaABorrar" class="form-control">
-                        <div class="mt-1 text-danger" id="cedulaABorrarValidacion"></div>
                     </div>
                     <button type="button" class="p-1 mt-3 PanBoton" id="borrarTurno">Borrar turno</button>
                 </form>
@@ -141,7 +169,6 @@
                         <div class="mt-2">
                             <label for="cedulaIdentidad" class="form-label">Cédula de identidad</label>
                             <input type="number" id="cedulaIdentidad" class="form-control">
-                            <div class="mt-1 text-danger" id="cedulaValidacion"></div>
                         </div>
                         <div class="mt-2">
                             <label for="fecha" class="form-label">Fecha</label>
@@ -161,7 +188,6 @@
                                 <option value="17:00">17:00</option>
                                 <option value="17:30">17:30</option>
                             </select>
-                            <div class="mt-1 text-danger" id="horaValidacion"></div>
                         </div>
                         <div class="mt-2">
                             <label for="procedimiento" class="form-label">Procedimiento a realizar</label>
@@ -171,7 +197,6 @@
                             <label for="detalles" class="form-label">Detalles:</label>
                             <textarea name="detalles" id="detalles" class="form-control"></textarea>
                         </div>
-                        <div class="mt-1 text-danger" id="mensajeValidacion"></div>
                         <button type="button" class="p-1 mt-3 PanBoton" id="enviarFormulario">Reservar turno</button>
                     </form>
                 </div>
@@ -194,12 +219,15 @@
         
     </main>
     <footer>
-
+        
     </footer>
 
 <!--Script de Bootstrap-->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.min.js" integrity="sha384-RuyvpeZCxMJCqVUGFI0Do1mQrods/hhxYlcVfGPOfQtPJh0JCw12tUAZ/Mv10S7D" crossorigin="anonymous"></script>
+
+<!--SWEETALERT2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 </html>
